@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "anime-to-anki"
+version = "0.1.0"
+description = "Create Anki cards from bilingual anime clips and song subtitles."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{ name = "anime-to-anki contributors" }]
+dependencies = []
+
+[project.optional-dependencies]
+examples = ["genanki>=0.13,<0.14"]
+
+[project.urls]
+Repository = "https://github.com/Juvenile-A3/anime-to-anki"
+
+[project.scripts]
+anime-to-anki = "anime_to_anki.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

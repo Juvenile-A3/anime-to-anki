@@ -1,0 +1,183 @@
+
+<div class="s2-card s2-back-card">
+  <div class="s2-study-layout">
+    <main class="s2-study-column">
+      <section class="s2-media-grid">
+  {{#Video}}
+  <div class="s2-video video-section">{{Video}}</div>
+  {{/Video}}
+  {{^Video}}
+  {{#Screenshot}}<div class="s2-screenshot">{{Screenshot}}</div>{{/Screenshot}}
+  {{/Video}}
+  {{#Audio_Sentence}}
+  <div class="s2-side-panel">
+    <div class="s2-audio-main">{{Audio_Sentence}}</div>
+    <div class="s2-audio-repeat" aria-hidden="true">{{Audio_Sentence}}{{Audio_Sentence}}{{Audio_Sentence}}{{Audio_Sentence}}</div>
+  </div>
+  {{/Audio_Sentence}}
+  {{#Audio_Extra}}<div class="s2-extra-audio">{{Audio_Extra}}</div>{{/Audio_Extra}}
+</section>
+
+      {{#Morph}}
+      <section class="s2-word-section">
+        <div class="s2-morph">{{Morph}}</div>
+        {{#Definition}}<div class="s2-definition">{{Definition}}</div>{{/Definition}}
+      </section>
+      {{/Morph}}
+
+      <section class="s2-sentence-section">
+        {{#Reading}}
+        <div id="reading" class="s2-reading"><span class="field">{{furigana:Reading}}</span></div>
+        {{/Reading}}
+        {{^Reading}}
+        {{#Expression}}<div id="reading" class="s2-reading"><span class="field">{{Expression}}</span></div>{{/Expression}}
+        {{/Reading}}
+
+        {{#Chinese}}
+        <div class="s2-chinese">{{Chinese}}</div>
+        {{/Chinese}}
+
+        <div class="card-source" aria-label="来源">{{#Artist}}<span class="card-source-item">歌手：{{Artist}}</span>{{/Artist}}{{#SongTitle}}<span class="card-source-item">歌名：{{SongTitle}}</span>{{/SongTitle}}{{#Album}}<span class="card-source-item">专辑：{{Album}}</span>{{/Album}}{{#Source}}<div class="card-source-note">{{Source}}</div>{{/Source}}</div>
+
+      </section>
+    </main>
+
+    <aside class="s2-lookup-column">
+      <section class="s2-lookup-section">
+        <div id="lookupExpression" class="s2-hidden-data">{{Expression}}</div>
+        <div id="lookupMorph" class="s2-hidden-data">{{Morph}}</div>
+
+        <div class="s2-lookup-tabs">
+          <button type="button" class="s2-lookup-button" data-lookup="ichi">ichi.moe</button>
+          <button type="button" class="s2-lookup-button" data-lookup="jisho">Jisho</button>
+        </div>
+
+        <div id="lookup-ichi-panel" class="s2-lookup-panel">
+          <iframe id="lookup-ichi" class="s2-lookup-frame" title="ichi.moe" sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
+        </div>
+
+        <div id="lookup-jisho-panel" class="s2-lookup-panel">
+          <iframe id="lookup-jisho" class="s2-lookup-frame" title="Jisho" sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
+        </div>
+      </section>
+    </aside>
+  </div>
+</div>
+
+<script>
+(function () {
+  function text(id) {
+    var node = document.getElementById(id);
+    return node ? node.textContent.replace(/\s+/g, " ").trim() : "";
+  }
+
+  var expression = text("lookupExpression");
+  var morph = text("lookupMorph") || expression;
+  var urls = {
+    ichi: expression ? "https://ichi.moe/cl/qr/?q=" + encodeURIComponent(expression) + "&r=htr" : "",
+    jisho: morph ? "https://jisho.org/search/" + encodeURIComponent(morph) : ""
+  };
+
+  function setPanel(name, open) {
+    var panel = document.getElementById("lookup-" + name + "-panel");
+    var frame = document.getElementById("lookup-" + name);
+    var button = document.querySelector('[data-lookup="' + name + '"]');
+    if (!panel || !frame || !button) return;
+
+    panel.style.display = open ? "block" : "none";
+    button.classList.toggle("active", open);
+    if (open && !frame.src && urls[name]) frame.src = urls[name];
+  }
+
+  window.toggleLookup = function (name) {
+    var panel = document.getElementById("lookup-" + name + "-panel");
+    var willOpen = !panel || panel.style.display !== "block";
+    setPanel("ichi", false);
+    setPanel("jisho", false);
+    if (willOpen) setPanel(name, true);
+  };
+
+  var buttons = document.querySelectorAll(".s2-lookup-button");
+  for (var i = 0; i < buttons.length; i++) {
+    buttons[i].addEventListener("click", function () {
+      window.toggleLookup(this.getAttribute("data-lookup"));
+    });
+  }
+
+  setPanel("ichi", true);
+})();
+</script>
+
+<script>
+(function () {
+  function text(id) {
+    var node = document.getElementById(id);
+    return node ? node.textContent.replace(/\s+/g, " ").trim() : "";
+  }
+
+  function escapeHtml(value) {
+    return value.replace(/[&<>"']/g, function (ch) {
+      return {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[ch];
+    });
+  }
+
+  var fields = document.querySelectorAll(".field");
+  var morph = text("lookupMorph");
+  if (!morph) return;
+  for (var i = 0; i < fields.length; i++) {
+    fields[i].innerHTML = fields[i].innerHTML.replace(
+      morph,
+      '<span class="s2-highlight">' + escapeHtml(morph) + '</span>'
+    );
+  }
+})();
+</script>
+
+<script>
+(function () {
+  function startVideoLoop() {
+    var video = document.getElementById("anime-video") || document.querySelector(".s2-video video");
+    if (!video || video.dataset.loopReady === "1") return;
+
+    video.dataset.loopReady = "1";
+    video.controls = true;
+    video.playsInline = true;
+    video.preload = "auto";
+
+    var maxPlays = parseInt(video.dataset.repeat || "15", 10);
+    if (!maxPlays || maxPlays < 1) maxPlays = 1;
+
+    var plays = 0;
+    var playOnce = function () {
+      if (plays >= maxPlays) return;
+      plays += 1;
+      try { video.currentTime = 0; } catch (error) {}
+      var promise = video.play();
+      if (promise && typeof promise.catch === "function") {
+        promise.catch(function () {
+          video.closest(".video-section").classList.add("manual-play-needed");
+        });
+      }
+    };
+
+    video.addEventListener("ended", playOnce);
+    if (video.readyState >= 1) {
+      playOnce();
+    } else {
+      video.addEventListener("loadedmetadata", playOnce, { once: true });
+      video.load();
+    }
+  }
+
+  if (typeof onShownHook !== "undefined") {
+    onShownHook.push(startVideoLoop);
+  }
+  setTimeout(startVideoLoop, 80);
+})();
+</script>

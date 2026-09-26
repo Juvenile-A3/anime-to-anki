@@ -1,0 +1,71 @@
+[output]
+# All captures are written here. Keep media files beside anki_import.tsv
+# if you plan to import the TSV manually into Anki.
+root = "~/AnimeAnki"
+tsv_name = "anki_import.tsv"
+manifest_name = "capture_manifest.jsonl"
+
+# If mpv exposes subtitle start/end times, the clip uses that subtitle
+# range plus this padding. Otherwise it falls back to time_pos +/- below.
+padding_before = 0.25
+padding_after = 0.35
+fallback_before = 1.0
+fallback_after = 2.0
+min_clip_seconds = 1.2
+max_clip_seconds = 12.0
+
+ffmpeg_path = "ffmpeg"
+# WebM is the safest video format for Anki Desktop video playback.
+clip_extension = "webm"
+video_codec = "libvpx-vp9"
+video_crf = 32
+video_preset = "veryfast"
+# Downscale video for faster captures and smaller Anki media.
+# Set to 0 to keep the original height.
+video_max_height = 360
+# Set above 0 to cap frame rate, e.g. 24.0.
+video_fps = 0.0
+# Fast WebM/VP9 options. Increase quality by using good/4 or realtime/6.
+video_deadline = "realtime"
+video_cpu_used = 8
+audio_codec = "libopus"
+audio_bitrate = "128k"
+# Downmix surround audio to stereo for smaller Anki clips and broad encoder support.
+# Set to 0 to keep the source channel count.
+audio_channels = 2
+
+# "video" writes <video controls src="..."></video>.
+# "sound" writes [sound:...] for people who prefer Anki's sound syntax.
+media_reference = "video"
+
+# If AnkiConnect import succeeds, false removes the local clip copy.
+keep_media = true
+# If false, TSV is written only when AnkiConnect is disabled or fails.
+append_tsv = true
+
+[text]
+# auto: if mpv provides secondary subtitles, use those as Chinese.
+# Otherwise split by line and simple language cues.
+# Use first_chinese when one bilingual subtitle track is ordered Chinese/Japanese.
+# Use first_japanese when it is ordered Japanese/Chinese.
+split_mode = "auto"
+japanese_first = true
+# For two mpv subtitle tracks: japanese means primary=Japanese, secondary=Chinese.
+# Set to chinese when primary=Chinese and secondary=Japanese.
+primary_subtitle_language = "japanese"
+
+[anki]
+# Set true after installing AnkiConnect and opening Anki.
+enabled = false
+connect_url = "http://127.0.0.1:8765"
+deck = "Japanese::Anime"
+model = "subs2srs+"
+
+# Basic uses Front/Back. For a custom note type, set these to your fields,
+# e.g. Japanese, Chinese, Clip, Source.
+japanese_field = "Expression"
+chinese_field = "Chinese"
+clip_field = "Video"
+source_field = "Source"
+tags = ["anime", "mined"]
+allow_duplicate = false

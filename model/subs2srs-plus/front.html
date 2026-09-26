@@ -1,0 +1,62 @@
+
+<div class="s2-card s2-front-card">
+  <section class="s2-media-grid">
+  {{#Video}}
+  <div class="s2-video video-section">{{Video}}</div>
+  {{/Video}}
+  {{^Video}}
+  {{#Screenshot}}<div class="s2-screenshot">{{Screenshot}}</div>{{/Screenshot}}
+  {{/Video}}
+  {{#Audio_Sentence}}
+  <div class="s2-side-panel">
+    <div class="s2-audio-main">{{Audio_Sentence}}</div>
+    <div class="s2-audio-repeat" aria-hidden="true">{{Audio_Sentence}}{{Audio_Sentence}}{{Audio_Sentence}}{{Audio_Sentence}}</div>
+  </div>
+  {{/Audio_Sentence}}
+  {{#Audio_Extra}}<div class="s2-extra-audio">{{Audio_Extra}}</div>{{/Audio_Extra}}
+</section>
+
+  <div class="card-source" aria-label="来源">{{#Artist}}<span class="card-source-item">歌手：{{Artist}}</span>{{/Artist}}{{#SongTitle}}<span class="card-source-item">歌名：{{SongTitle}}</span>{{/SongTitle}}{{#Album}}<span class="card-source-item">专辑：{{Album}}</span>{{/Album}}{{#Source}}<div class="card-source-note">{{Source}}</div>{{/Source}}</div>
+</div>
+<script>
+(function () {
+  function startVideoLoop() {
+    var video = document.getElementById("anime-video") || document.querySelector(".s2-video video");
+    if (!video || video.dataset.loopReady === "1") return;
+
+    video.dataset.loopReady = "1";
+    video.controls = true;
+    video.playsInline = true;
+    video.preload = "auto";
+
+    var maxPlays = parseInt(video.dataset.repeat || "15", 10);
+    if (!maxPlays || maxPlays < 1) maxPlays = 1;
+
+    var plays = 0;
+    var playOnce = function () {
+      if (plays >= maxPlays) return;
+      plays += 1;
+      try { video.currentTime = 0; } catch (error) {}
+      var promise = video.play();
+      if (promise && typeof promise.catch === "function") {
+        promise.catch(function () {
+          video.closest(".video-section").classList.add("manual-play-needed");
+        });
+      }
+    };
+
+    video.addEventListener("ended", playOnce);
+    if (video.readyState >= 1) {
+      playOnce();
+    } else {
+      video.addEventListener("loadedmetadata", playOnce, { once: true });
+      video.load();
+    }
+  }
+
+  if (typeof onShownHook !== "undefined") {
+    onShownHook.push(startVideoLoop);
+  }
+  setTimeout(startVideoLoop, 80);
+})();
+</script>

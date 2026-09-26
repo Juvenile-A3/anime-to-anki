@@ -1,0 +1,14 @@
+* text=auto
+*.py text eol=lf
+*.lua text eol=lf
+*.md text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+*.toml text eol=lf
+*.tsv text eol=lf
+*.ps1 text eol=crlf
+*.apkg binary
+*.mp3 binary
+*.webm binary
+*.png binary
+*.jpg binary
