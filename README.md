@@ -15,6 +15,18 @@
 
 示例包包含模板和媒体，导入到独立的 `Anime to Anki Examples` 牌组，使用独立笔记类型，不携带原用户的复习进度。也提供 [TSV、JSON 与媒体文件](examples/README.md)。
 
+## 卡片效果
+
+左侧为正面，右侧为背面。下图使用仓库实际模板和示例媒体在浏览器中渲染；播放按钮用于展示，在线查词面板已收起。Anki 各客户端的播放控件外观可能略有不同。
+
+**音乐卡片：封面与句子音频 → 日文歌词、中文译文和歌曲信息**
+
+![摇曳百合音乐卡片正反面效果](docs/screenshots/music-card-preview.png)
+
+**动画卡片：原声视频片段 → 日文台词、中文译文和片段来源**
+
+![ReZero 动画卡片正反面效果](docs/screenshots/anime-card-preview.png)
+
 ## 功能
 
 - **mpv 一键制卡**：读取当前字幕和时间点，调用 FFmpeg 截取 WebM 视频；支持双字幕轨、双语字幕和 ASS 字幕。

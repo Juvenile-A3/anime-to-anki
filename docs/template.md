@@ -28,3 +28,18 @@ Audio_Extra, Notes, Definition, Morph, Artist, SongTitle, Album, Source
 发布版移除了未提供的 `_kanjax_with_koohii v2.js`、`_jquery.bpopup.min.js` 引用，并用普通 `Definition` 字段替代依赖附加组件的 `edit:Definition`。无需这些脚本也能完成核心音视频与文本展示。未更改你本机 Anki 中已安装的模板。
 
 示例 `.apkg` 使用独立笔记类型 `Anime to Anki Examples`，便于试用而不覆盖现有 `subs2srs+`。
+
+## 效果截图
+
+- [音乐卡片正反面](screenshots/music-card-preview.png)
+- [动画卡片正反面](screenshots/anime-card-preview.png)
+
+截图基于已发布示例的真实字段、媒体和本目录的模板生成，不是 Anki 应用窗口实拍。两侧预览保持同一套模板样式；浏览器中模拟了 Anki 的音频播放按钮，暂停视频，并收起在线查词区域。
+
+重新生成预览页：
+
+```powershell
+python tools/build_card_previews.py
+```
+
+页面位于 `output/playwright/card-previews/music.html` 和 `anime.html`。使用 1280 × 900 的浏览器视口截图即可；脚本需要 FFmpeg 来提取真实视频画面，预览不请求外部网站，也不会修改 Anki。
